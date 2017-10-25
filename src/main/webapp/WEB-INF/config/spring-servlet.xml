@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+    <mvc:annotation-driven />
+    <context:component-scan base-package="test.spring.entity"/>
+    <context:component-scan base-package="test.spring.controller"/>
+    <context:component-scan base-package="test.spring.dao"/>
+    <context:component-scan base-package="test.spring.service"/>
+
+    <!--jsp view-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <!--数据库相关配置-->
+    <bean id="dataSource" name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass"  value="com.mysql.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://123.207.139.74:3306/db_test" />
+        <property name="user" value="test" />
+        <property name="password" value="test" />
+
+        <property name="checkoutTimeout" value="30000" />
+        <property name="idleConnectionTestPeriod" value="60" />
+        <property name="maxIdleTime" value="30" />
+        <property name="initialPoolSize" value="10" />
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。默认值: 3 -->
+        <property name="acquireIncrement" value="5" />
+    </bean>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <!--数据库相关配置-->
+
+    <!--自动生成API Swagger-->
+    <mvc:resources mapping="/swagger/**" location="/swagger/"/>
+    <bean class="com.mangofactory.swagger.configuration.SpringSwaggerConfig" />
+    <bean name="waggerConfig" class="test.spring.autoAPI.SwaggerConfig" />
+    <!--自动生成API Swagger-->
+
+</beans>
